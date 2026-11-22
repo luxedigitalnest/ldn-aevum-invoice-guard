@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#091527">
+<meta name="description" content="Open-source noncustodial invoice payment verification using tUSD8 on QDay Aevum Testnet.">
+<title>Invoice Guard — LDN on Aevum Testnet</title>
+<style>
+:root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, Segoe UI, sans-serif; background:#091527; color:#e8f0fc; }
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(65% 65% at 85% 8%,#15447099,transparent),#091527}
+a{color:#7fd4ff}header,main,footer{max-width:1100px;margin:auto;padding:22px}
+header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.02em}
+.logo-mark{width:40px;height:40px;border:1px solid #54c7fb;background:#143b56;border-radius:12px;display:grid;place-items:center;color:#adf2ff}
+.chip{color:#a9efcf;background:#143d40;border:1px solid #368272;padding:8px 12px;border-radius:999px;font-size:.8rem;font-weight:700}
+.hero{padding:32px 0 28px}h1{font-size:clamp(2rem,4.5vw,3.7rem);letter-spacing:-.05em;line-height:1.1;max-width:760px;margin:0 0 16px}
+.kicker{font-weight:700;color:#87cfe9;text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;margin-bottom:18px}
+.intro{font-size:1.08rem;line-height:1.65;max-width:660px;color:#b7c8dc;margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.panel{background:#101f34eF;border:1px solid #2b4564;border-radius:22px;padding:25px;box-shadow:0 18px 45px #0002}
+.panel h2{font-size:1.2rem;letter-spacing:-.02em;margin:0 0 8px}.sub{font-size:.9rem;color:#9db3cb;line-height:1.5;margin:0 0 22px}
+label{display:block;font-size:.82rem;font-weight:650;color:#c7d9f0;margin:16px 0 7px}
+input{display:block;width:100%;height:47px;background:#091629;border:1px solid #34516d;border-radius:10px;padding:12px;color:#e8f0fc;font:inherit;font-size:.92rem}
+input:focus,button:focus-visible{outline:2px solid #6ecdfc;outline-offset:2px}input::placeholder{color:#6d86a1}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.actions{margin-top:21px}
+button{cursor:pointer;font-weight:750;font-size:.87rem;padding:12px 17px;border-radius:11px;border:1px solid transparent;min-height:44px;font-family:inherit}
+.primary{background:#62d0fb;color:#062033}.secondary{background:#1c3853;color:#c4e5fa;border-color:#315976}
+button[disabled]{opacity:.55;cursor:not-allowed}
+.out{overflow-wrap:anywhere;background:#0a192e;border:1px solid #31506a;color:#c9e5fc;padding:15px;border-radius:12px;min-height:54px;font-size:.9rem;margin-top:17px;white-space:pre-wrap}
+.out:empty{display:none}.out[data-kind=error]{color:#ffd4ce;border-color:#a36267}
+.out[data-kind=good]{color:#b7f8d5;border-color:#478d76}.out[data-kind=warn]{color:#ffe7a5;border-color:#8e7b4c}
+.small{font-size:.82rem;color:#9bafc6;line-height:1.55}.small b{color:#dbe8f5}
+.details{margin:27px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.detail{border:1px solid #2b4564;border-radius:14px;background:#0d2137;padding:17px}
+.detail strong{display:block;font-size:1rem;margin-bottom:7px}.detail span{color:#9db3cb;font-size:.83rem;line-height:1.5}
+footer{font-size:.85rem;color:#8ba5bf;padding-bottom:45px}
+@media(max-width:740px){.grid{grid-template-columns:1fr}.details{grid-template-columns:1fr}header,main,footer{padding:18px}.panel{padding:20px}.hero{padding-top:22px}}
+</style>
+</head>
+<body>
+<header><div class="logo"><div class="logo-mark" aria-hidden="true">IG</div><div>LDN <span style="color:#7fd4ff">Invoice Guard</span></div></div><div class="chip">Aevum Testnet · Chain 44005</div></header>
+<main>
+<section class="hero"><div class="kicker">Proof before payment confirmation</div>
+<h1>Stablecoin invoices, verified on-chain.</h1>
+<p class="intro">Create a transparent payment request for QDay Aevum’s <b>test-only tUSD8</b>. Share the invoice, pay through your own wallet, then independently verify the exact transfer and confirmations. No custody, no hidden approval, no real-money promises.</p></section>
+<div class="grid">
+<section class="panel" aria-labelledby="create-title">
+<h2 id="create-title">1. Create a test invoice</h2><p class="sub">The merchant controls this address. Verify it independently before using a wallet.</p>
+<label for="merchant">Merchant receiving address</label><input id="merchant" autocomplete="off" spellcheck="false" placeholder="0x…" required>
+<label for="amount">Amount (tUSD8 · 6 decimals)</label><input id="amount" inputmode="decimal" placeholder="25.50" required>
+<label for="reference">Local invoice reference</label><input id="reference" autocomplete="off" maxlength="48" placeholder="INV-2026-001" required>
+<div class="row actions"><button id="create" class="primary">Create invoice link</button><button id="copy" class="secondary" disabled>Copy link</button></div>
+<div id="create-result" class="out" aria-live="polite"></div>
+</section>
+<section class="panel" aria-labelledby="pay-title">
+<h2 id="pay-title">2. Pay or verify</h2><p class="sub">Use the generated link, or paste a transaction hash from the Aevum explorer. Only the wallet popup can approve a payment.</p>
+<div class="row"><button class="secondary" id="network">Add Aevum to wallet</button><button class="secondary" id="pay">Pay test tUSD8</button></div>
+<label for="transaction">Aevum transaction hash</label><input id="transaction" autocomplete="off" spellcheck="false" placeholder="0x…">
+<div class="row actions"><button id="verify" class="primary">Verify on-chain payment</button><button id="explorer" class="secondary" disabled>View on explorer</button></div>
+<div id="pay-result" class="out" aria-live="polite"></div>
+</section>
+</div>
+<section class="details" aria-label="Trust controls">
+<div class="detail"><strong>Exact payment</strong><span>Matches the official 6-decimal tUSD8 token, recipient, amount, payer and Transfer event — not just an explorer screenshot.</span></div>
+<div class="detail"><strong>Six confirmations</strong><span>Marks the receipt verified only after six observed blocks. Pending or wrong-chain transfers are never labeled paid.</span></div>
+<div class="detail"><strong>Open and inspectable</strong><span>Uses read-only JSON-RPC for proof; signing happens only if the payer explicitly clicks Pay in their wallet.</span></div>
+</section>
+<p class="small" style="margin-top:25px"><b>Limitations:</b> The invoice reference is an off-chain label and is not embedded into an ERC-20 transfer. A valid payment proof does not prove identity, intention, invoice uniqueness, or irreversible finality. A merchant should independently match transaction hashes to invoices and guard against reusing one payment across multiple invoices. This is a testnet demonstration, not a payment service.</p>
+</main>
+<footer>LDN · Aevum Builder Challenge #1 · Independent educational prototype · <a href="https://qday.io/builder-challenge" target="_blank" rel="noopener">Organizer rules</a> · <a href="https://wiki.qday.info/Knowledge/reference/tokens" target="_blank" rel="noopener">Official token list</a></footer>
+<script type="module" src="./src/app.mjs"></script>
+</body></html>

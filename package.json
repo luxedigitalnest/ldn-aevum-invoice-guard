@@ -1,0 +1,12 @@
+{
+  "name": "ldn-aevum-invoice-guard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Noncustodial, exact-amount testnet tUSD8 invoice generator with chain receipt proof",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "serve": "node server.mjs"
+  },
+  "engines": { "node": ">=22" }
+}
