@@ -1,8 +1,18 @@
 # LDN Invoice Guard — Aevum tUSD8 payment proof
 
-> **2026-11-22 status:** A functioning **publicly deployed** testnet invoice prototype, [live interface](https://luxedigitalnest.github.io/ldn-aevum-invoice-guard/), [original narrated 2m35s demo](https://luxedigitalnest.github.io/ldn-aevum-invoice-guard/demo.html), 18 passing unit tests, and 4 passing live read-only Aevum RPC checks. **No genuine Aevum tUSD8 payment, on-chain settlement receipt, prize, or judged hackathon submission is claimed.** The official tQDAY/tUSD8 faucet reports the linked wallet ineligible for the mainnet-holdings rule. This is a testnet educational prototype, **not production merchant checkout**.
+> **2026-11-22 verified update:** The [public Invoice Guard](https://luxedigitalnest.github.io/ldn-aevum-invoice-guard/), [original narrated 2m35s prototype demo](https://luxedigitalnest.github.io/ldn-aevum-invoice-guard/demo.html), 18 passing unit tests, and live Aevum read-only RPC checks are published. Original [DoraHacks BUIDL #51645](https://dorahacks.io/build/51645) has been **submitted and is under organizer review**; no prize has been awarded. The project wallet received **1 test tQDAY and 5 test tUSD8** via the official QDay Discord faucet, verified by successful chain 44005 receipts and token balances. **A real invoice-payment transaction has NOT yet been signed, settled or verified.** This remains an educational testnet prototype, **not production merchant checkout**.
 
 An original, noncustodial **Invoice Payments / Confirmation of Payee** entry under development for [QDay Aevum Builder Challenge #1](https://qday.io/builder-challenge). Build period is Nov 16–Dec 11, **2026-12-11 08:00 UTC** cutoff.
+
+## Verified free testnet funding (22 November 2026)
+
+The **QDay Official Discord faucet** issued a one-time, free testnet allocation to the existing project wallet `0xADFC0cb6819BC49939b021E45b0d43306575e5d3` (no real assets purchased):
+
+- [1 tQDAY transfer](https://explorer-test.qday.info/tx/0x9b40633a04bcf42017543245821bbb4582d5054091332c174e5e3414daeac75e) — success `status=1`, Aevum block `3856363`, native value `1000000000000000000` wei.
+- [5 tUSD8 transfer](https://explorer-test.qday.info/tx/0x466bd69301104fc1d81c96737591197670c3a52861b43c9fc940fdd28ae8483d) — success `status=1`, same block, ERC-20 transfer event.
+- Independent JSON-RPC balance checks: native balance `1.0 tQDAY`; `balanceOf` on the official tUSD8 token contract returned `5000000` units / `5.0 tUSD8`; 720 confirmations were observed at testnet head `3857082`.
+
+**These receipts are faucet funding, not an invoice settlement.** Never present them as a successful merchant payment or claim tokens again for the same identity. The next genuine milestone is one explicit owner-authorized tUSD8 payment to a clearly confirmed merchant address, followed by proof of the exact recipient, amount, payer, Transfer event and at least six confirmations.
 
 ## What it does
 
@@ -74,15 +84,15 @@ The local invoice reference is **not** embedded in a standard token transfer. Th
 
 `npm test` checks exact fixed-point math, calldata encoding, address and hash validation, original invoice label validation, successful six-confirmation proof and negative cases for wrong network/contract/merchant/amount/value, revert, forged logs, mismatched hash, wrong block and immature or unmined receipts. Tests use entirely synthetic sample transactions; **they are not blockchain receipts**.
 
-## Outstanding before legitimate hackathon submission
+## Submitted build: remaining technical proof before judging
 
 - [x] Original documented code and deterministic verifier test suite (18 local tests passed Nov22).
-- [ ] Live read-only QDay Aevum RPC check with real chain ID, official token bytecode and decimals.
-- [ ] Public GitHub source and accessible static application.
+- [x] Live read-only QDay Aevum RPC check with real chain ID, official token bytecode and decimals.
+- [x] Public GitHub source and accessible static application.
 - [ ] **Actual owner-authorized testnet wallet transfer** with real tUSD8, confirmed on Aevum, transaction hash, screenshot and legitimate invoice mapping. Never sign on the user's behalf without owner approval.
 - [ ] Browser smoke test and accessible UI review against a **real** transaction.
 - [ ] Genuine original 3–5-minute demo or equivalent organizer deliverable.
-- [ ] DoraHacks **event registration** and **final project submission** — both must be separately verified (do not submit a test-only concept as a finished payment integration).
+- [x] DoraHacks **event registration and original project submission** — existing [BUIDL #51645](https://dorahacks.io/build/51645) is under organizer review. The prototype is accurately labeled; **not** represented as an end-to-end paid invoice.
 
 **Submission deadline:** 11 December 2026 08:00 UTC. Selection of top 5 and prize assessment is discretionary, and any cash prize requires organizer validation.
 
