@@ -7,7 +7,8 @@ const allowed = new Map([
   ["/", ["index.html", "text/html; charset=utf-8"]],
   ["/index.html", ["index.html", "text/html; charset=utf-8"]],
   ["/src/app.mjs", ["src/app.mjs", "text/javascript; charset=utf-8"]],
-  ["/src/core.mjs", ["src/core.mjs", "text/javascript; charset=utf-8"]]
+  ["/src/core.mjs", ["src/core.mjs", "text/javascript; charset=utf-8"]],
+  ["/favicon.svg", ["favicon.svg", "image/svg+xml"]]
 ]);
 createServer(async (req, res) => {
   const pathname = new URL(req.url || "/", "http://localhost").pathname;
