@@ -1,6 +1,6 @@
 # LDN Invoice Guard — Aevum tUSD8 payment proof
 
-> **2026-11-22 status:** A functioning **local** open-source prototype with 18 passing unit tests. **No wallet transfer, on-chain payment receipt, judged hackathon submission, or USDT award has been made.** Its browser UI and live Aevum RPC are to be tested separately. This is a testnet educational application, **not a production merchant checkout**.
+> **2026-11-22 status:** A functioning **publicly deployed** testnet invoice prototype, [live interface](https://luxedigitalnest.github.io/ldn-aevum-invoice-guard/), [original narrated 2m35s demo](https://luxedigitalnest.github.io/ldn-aevum-invoice-guard/demo.html), 18 passing unit tests, and 4 passing live read-only Aevum RPC checks. **No genuine Aevum tUSD8 payment, on-chain settlement receipt, prize, or judged hackathon submission is claimed.** The official tQDAY/tUSD8 faucet reports the linked wallet ineligible for the mainnet-holdings rule. This is a testnet educational prototype, **not production merchant checkout**.
 
 An original, noncustodial **Invoice Payments / Confirmation of Payee** entry under development for [QDay Aevum Builder Challenge #1](https://qday.io/builder-challenge). Build period is Nov 16–Dec 11, **2026-12-11 08:00 UTC** cutoff.
 

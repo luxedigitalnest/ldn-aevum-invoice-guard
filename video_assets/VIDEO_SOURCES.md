@@ -1,0 +1,1 @@
+Original app browser screenshots of local port 4173 (01/02/03) captured Nov22; authentic original local src/core.mjs screenshot (04). Narration and captions are newly authored. No paid transaction, wallet signature, mainnet deposits, reward or successful tUSD8 transfer represented. Test source and live RPC independently checked. No external copyrighted background video or music.
