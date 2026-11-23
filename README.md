@@ -84,6 +84,15 @@ The local invoice reference is **not** embedded in a standard token transfer. Th
 
 `npm test` checks exact fixed-point math, calldata encoding, address and hash validation, original invoice label validation, successful six-confirmation proof and negative cases for wrong network/contract/merchant/amount/value, revert, forged logs, mismatched hash, wrong block and immature or unmined receipts. Tests use entirely synthetic sample transactions; **they are not blockchain receipts**.
 
+## Live negative-chain verification checkpoint (23 November 2026)
+
+On the [public browser app](https://luxedigitalnest.github.io/ldn-aevum-invoice-guard/), an unsigned sample invoice was generated for recipient `0xadfc0cb6819bc49939b021e45b0d43306575e5d3`, **0.001 tUSD8**, reference `LDN-QDAY-UNSIGNED-20261123`. The published [5 tUSD8 faucet-funding transaction](https://explorer-test.qday.info/tx/0x466bd69301104fc1d81c96737591197670c3a52861b43c9fc940fdd28ae8483d) was then entered as an intentionally mismatching proof. The browser's live read-only verification returned:
+
+> **REJECTED · Wrong merchant, amount, or method**  
+> **No paid status recorded.**
+
+This is a **real negative test** against an existing faucet receipt, **not a merchant invoice payment**, not a successful end-to-end settlement, and not new tokens earned. No wallet signature or transfer was initiated. The exact recipient and amount must be independently reviewed before any later owner-approved testnet payment.
+
 ## Submitted build: remaining technical proof before judging
 
 - [x] Original documented code and deterministic verifier test suite (18 local tests passed Nov22).
