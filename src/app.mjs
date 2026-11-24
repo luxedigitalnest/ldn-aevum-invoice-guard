@@ -1,5 +1,7 @@
 import { AEVUM_CHAIN_ID, AEVUM_RPC, AEVUM_EXPLORER, TUSD8, makeInvoice, encodeTransfer, verifyPayment, rpc, txHash } from "./core.mjs";
 
+import { bindInBrowser } from "./settlement.mjs";
+
 const $ = id => document.getElementById(id);
 let invoice = null, link = "";
 const setOut = (id, message, kind = "") => {
@@ -65,7 +67,7 @@ $("pay").addEventListener("click", async () => {
 });
 $("verify").addEventListener("click", async () => {
   try {
-    invoice = details();
+    const checkedInvoice = details();
     const hash = txHash($("transaction").value.trim());
     setOut("pay-result", "Reading QDay Aevum blockchain; no wallet signature is requested.", "warn");
     const chain = await rpc("eth_chainId");
@@ -73,11 +75,14 @@ $("verify").addEventListener("click", async () => {
     const [transaction, receipt, head] = await Promise.all([
       rpc("eth_getTransactionByHash", [hash]), rpc("eth_getTransactionReceipt", [hash]), rpc("eth_blockNumber")
     ]);
-    const result = verifyPayment(invoice, hash, transaction, receipt, head, chain);
+    const result = verifyPayment(checkedInvoice, hash, transaction, receipt, head, chain);
     $("explorer").disabled = false;
-    if (result.ok) setOut("pay-result", "VERIFIED ON-CHAIN · " + result.confirmations + " confirmations\n"
-      + invoice.amount + " test tUSD8 from " + short(result.payer) + " to " + short(invoice.merchant)
-      + "\nTX " + hash + "\nReference " + invoice.ref + " is a local label only.", "good");
+    if (result.ok) {
+      const binding = await bindInBrowser(checkedInvoice, hash, result);
+      setOut("pay-result", "VERIFIED ON-CHAIN · " + result.confirmations + " confirmations\n"
+        + checkedInvoice.amount + " test tUSD8 from " + short(result.payer) + " to " + short(checkedInvoice.merchant)
+        + "\nTX " + hash + "\nReference " + checkedInvoice.ref + " · " + binding.status + " in this browser only. Not a shared merchant ledger.", "good");
+    }
     else setOut("pay-result", result.status.toUpperCase() + " · " + result.reason +
       (result.confirmations ? " · " + result.confirmations + " confirmations" : "") + "\nNo paid status recorded.", result.status === "rejected" ? "error" : "warn");
   } catch (e) { setOut("pay-result", "Verification unavailable: " + e.message + ". No payment is proven.", "error"); }
