@@ -8,6 +8,7 @@ const allowed = new Map([
   ["/index.html", ["index.html", "text/html; charset=utf-8"]],
   ["/src/app.mjs", ["src/app.mjs", "text/javascript; charset=utf-8"]],
   ["/src/core.mjs", ["src/core.mjs", "text/javascript; charset=utf-8"]],
+  ["/src/settlement.mjs", ["src/settlement.mjs", "text/javascript; charset=utf-8"]],
   ["/favicon.svg", ["favicon.svg", "image/svg+xml"]]
 ]);
 createServer(async (req, res) => {
