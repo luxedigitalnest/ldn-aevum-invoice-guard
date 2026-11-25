@@ -26,7 +26,10 @@ export function bindVerifiedPayment(storage, invoice, hash, verification) {
 }
 
 // Serialize concurrent verification tabs. Fail closed if storage/locking is unavailable.
-export async function bindInBrowser(invoice, hash, verification) {
+export async function bindInBrowser(invoice, hash, verification, assertCurrent = () => {}) {
   if (!globalThis.navigator?.locks?.request) throw new Error("Browser lock unavailable; local allocation not recorded");
-  return navigator.locks.request(STORAGE_KEY, () => bindVerifiedPayment(localStorage, invoice, hash, verification));
+  return navigator.locks.request(STORAGE_KEY, () => {
+    assertCurrent();
+    return bindVerifiedPayment(localStorage, invoice, hash, verification);
+  });
 }
