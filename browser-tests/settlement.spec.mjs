@@ -42,3 +42,59 @@ test('synthetic receipt binds once, survives reload and blocks reuse in another 
  await expect(second.locator('#pay-result')).toHaveAttribute('data-kind','error');
  expect(await second.evaluate(()=>JSON.parse(localStorage.getItem('ldn-aevum-invoice-bindings-v1')).length)).toBe(1);
 });
+
+async function mockReceipt(context, delay = 0) {
+  await context.route('https://rpc-test.qday.info/**', async route => {
+    if(route.request().method()==='OPTIONS') return route.fulfill({status:204,headers:{'access-control-allow-origin':'*','access-control-allow-methods':'POST, OPTIONS','access-control-allow-headers':'content-type'}});
+    const req=route.request().postDataJSON();
+    if(!Object.hasOwn(fixture,req.method)) throw Error('Unexpected RPC method');
+    if(delay) await new Promise(resolve=>setTimeout(resolve,delay));
+    return route.fulfill({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify({jsonrpc:'2.0',id:req.id,result:fixture[req.method]})});
+  });
+}
+test('editing a verified invoice invalidates its proof and old share link',async({context,page})=>{
+  await mockReceipt(context);
+  await page.goto(origin+'/index.html');
+  await verify(page,'INV-001');
+  await expect(page.locator('#pay-result')).toContainText('VERIFIED ON-CHAIN');
+  await page.locator('#create').click();
+  await expect(page.locator('#copy')).toBeEnabled();
+  await page.locator('#reference').fill('INV-002');
+  await expect(page.locator('#pay-result')).toContainText('Current payment is not verified');
+  await expect(page.locator('#pay-result')).toHaveAttribute('data-kind','warn');
+  await expect(page.locator('#copy')).toBeDisabled();
+  await expect(page.locator('#explorer')).toBeDisabled();
+  await expect(page.locator('#create-result')).toContainText('Create a new link');
+});
+test('pending verification locks controls and rejects a programmatic invoice change',async({context,page})=>{
+  await mockReceipt(context,500);
+  await page.goto(origin+'/index.html');
+  await verify(page,'INV-001');
+  await expect(page.locator('#verify')).toBeDisabled();
+  await expect(page.locator('#pay')).toBeDisabled();
+  await expect(page.locator('#reference')).toBeDisabled();
+  await page.locator('#reference').evaluate(el=>{el.value='INV-002';el.dispatchEvent(new Event('input',{bubbles:true}));});
+  await expect(page.locator('#pay-result')).toContainText('Invoice or transaction changed');
+  await expect(page.locator('#verify')).toBeEnabled();
+  expect(await page.evaluate(()=>localStorage.getItem('ldn-aevum-invoice-bindings-v1'))).toBeNull();
+});
+test('wallet network change during account approval prevents transaction request',async({page})=>{
+  await page.addInitScript(()=>{
+    let calls=0;
+    window.walletMethods=[];
+    window.ethereum={request:async({method})=>{
+      window.walletMethods.push(method);
+      if(method==='eth_chainId') return ++calls===1?'0xabe5':'0x1';
+      if(method==='eth_requestAccounts') return ['0x'+'b'.repeat(40)];
+      throw Error('Unexpected wallet call');
+    }};
+  });
+  await page.goto(origin+'/index.html');
+  await page.locator('#merchant').fill(merchant);
+  await page.locator('#amount').fill('0.001');
+  await page.locator('#reference').fill('INV-001');
+  await page.locator('#pay').click();
+  await expect(page.locator('#pay-result')).toContainText('Wallet network changed');
+  await expect(page.locator('#pay')).toBeEnabled();
+  expect(await page.evaluate(()=>window.walletMethods)).toEqual(['eth_chainId','eth_requestAccounts','eth_chainId']);
+});
